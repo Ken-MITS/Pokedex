@@ -57,6 +57,7 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
 
             inputStream.close();
             data = sBuilder.toString();
+            Log.i("provaLog", "data: "+data);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -81,18 +82,18 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
                         "Weight: " + jObject.getString("weight");
 
             // Get img SVG
-//            JSONObject sprites = new JSONObject(jObject.getString("sprites"));
-//            JSONObject other = new JSONObject(sprites.getString("other"));
-//            JSONObject dream_world = new JSONObject(other.getString("dream_world"));
-//            img  = dream_world.getString("front_default");
+            JSONObject sprites = new JSONObject(jObject.getString("sprites"));
+            JSONObject other = new JSONObject(sprites.getString("other"));
+            JSONObject dream_world = new JSONObject(other.getString("dream_world"));
+            img  = dream_world.getString("front_default");
 
-            // Get type/types
-//            JSONArray types = new JSONArray(jObject.getString("types"));
-//            for(int i=0; i<types.length(); i++){
-//                JSONObject type = new JSONObject(types.getString(i));
-//                JSONObject type2  = new JSONObject(type.getString("type"));
-//                strTypes.add(type2.getString("name"));
-//            }
+            //Get type/types
+            JSONArray types = new JSONArray(jObject.getString("types"));
+            for(int i=0; i<types.length(); i++){
+                JSONObject type = new JSONObject(types.getString(i));
+                JSONObject type2  = new JSONObject(type.getString("type"));
+                strTypes.add(type2.getString("name"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -101,15 +102,15 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
         // Set info
         MainActivity.txtDisplay.setText(this.results);
 
-//        // Set main img
-//        SvgLoader.pluck()
-//                .with(MainActivity.act)
-//                .load(img, MainActivity.imgPok);
-//
-//        // Set img types
-//        for(int i=0; i<strTypes.size(); i++){
-//            MainActivity.imgType[i].setImageResource(MainActivity.act.getResources().getIdentifier(strTypes.get(i), "drawable", MainActivity.act.getPackageName()));
-//        }
+        // Set main img
+        SvgLoader.pluck()
+                .with(MainActivity.act)
+                .load(img, MainActivity.imgPok);
+
+        // Set img types
+        for(int i=0; i<strTypes.size(); i++){
+            MainActivity.imgType[i].setImageResource(MainActivity.act.getResources().getIdentifier(strTypes.get(i), "drawable", MainActivity.act.getPackageName()));
+        }
 
     }
 }
