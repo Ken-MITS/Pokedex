@@ -9,6 +9,8 @@ import android.util.Log;
 //import com.ahmadrosid.svgloader.SvgLoader;
 //import com.squareup.picasso.Picasso;
 
+import com.ahmadrosid.svgloader.SvgLoader;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +29,7 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
 
     protected String data = "";
     protected String results = "";
-    protected ArrayList<String> strTypes; // Create an ArrayList object
+    protected ArrayList<String> strTypes, allTypes; // Create an ArrayList object
     protected String pokSearch;
 
     public fetchData(String pokSearch) {
@@ -38,9 +40,9 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         try {
+            URL url;
             //Make API connection
-            URL url = new URL("https://pokeapi.co/api/v2/pokemon/" + pokSearch);
-            Log.i("logtest", "https://pokeapi.co/api/v2/pokemon/" + pokSearch);
+            url = new URL("https://pokeapi.co/api/v2/pokemon/" + pokSearch);
 
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
@@ -57,7 +59,6 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
 
             inputStream.close();
             data = sBuilder.toString();
-            Log.i("provaLog", "data: "+data);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,10 +77,17 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
         try {
             jObject = new JSONObject(data);
 
+            // Set id after search
+            String id = jObject.getString("id");
+            MainActivity.numeroPokemon = Integer.parseInt(id);
+
             // Get JSON name, height, weight
             results += "Name: " + jObject.getString("name").toUpperCase() + "\n" +
                         "Height: " + jObject.getString("height") + "\n" +
-                        "Weight: " + jObject.getString("weight");
+                        "Weight: " + jObject.getString("weight") + "\n" +
+                        "Id: " +jObject.getString( "id");
+
+
 
             // Get img SVG
             JSONObject sprites = new JSONObject(jObject.getString("sprites"));
@@ -94,6 +102,10 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
                 JSONObject type2  = new JSONObject(type.getString("type"));
                 strTypes.add(type2.getString("name"));
             }
+
+            fetchData1 data2 = new fetchData1();
+            data2.execute();
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

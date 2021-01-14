@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
@@ -23,16 +24,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     public static Activity act;
     public static TextView txtDisplay;
     public static ImageView imgPok;
     public static Button right, left;
-    public static int numeroPokemon=1;
+    public static ImageButton types;
+    public static int numeroPokemon = 1;
+    public static boolean gotTypes=false;
 
 
-    public static ImageView [] imgType;
+    public static ImageView[] imgType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity{
 
         right = findViewById(R.id.btnRight);
         left = findViewById(R.id.btnLeft);
+        types = findViewById(R.id.btnTypes);
 
 
 
@@ -63,7 +67,7 @@ public class MainActivity extends AppCompatActivity{
         left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (numeroPokemon>1){
+                if (numeroPokemon > 1) {
                     numeroPokemon--;
                 }
 
@@ -72,19 +76,16 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        Log.i("provaLog", "Entrando app");
+        types.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
-
-        fetchData data = new fetchData("1");
+        fetchData data = new fetchData(String.valueOf(numeroPokemon));
         data.execute();
-        Log.i("provaLog", "data.pokSearch: "+data.pokSearch);
-        Log.i("provaLog", "data.data: "+data.data);
-
-
-
-
-
 
         ImageButton btnSearch = findViewById(R.id.btnSearch);
         btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -93,15 +94,23 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        ImageButton btnTypes = findViewById(R.id.btnTypes);
-        btnTypes.setOnClickListener(new View.OnClickListener() {
+        types = findViewById(R.id.btnTypes);
+        types.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+                  /*  AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                    builder.setTitle(R.string.pick_color)
+                            .setItems(R.array.colors_array, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // The 'which' argument contains the index position of the selected item
+                                }
+                            });*/
             }
         });
 
     }
 
-    public void showTxtSearch(){
+    public void showTxtSearch() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Search a Pokemon");
 
@@ -124,6 +133,8 @@ public class MainActivity extends AppCompatActivity{
         });
         alert.show();
     }
+
+
 
 
 }
