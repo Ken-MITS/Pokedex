@@ -27,10 +27,15 @@ public class fetchData1 extends AsyncTask<Void, Void, Void> {
 
     protected String data = "";
     protected String results = "";
-    protected ArrayList<String> allTypes; // Create an ArrayList object
+    protected static ArrayList<String> oneTypeNames; // Create an ArrayList object
     protected String pokSearch;
+    private static boolean secondConnection = false;
 
-    public void fetchData1() {
+    public fetchData1() {
+    }
+    public fetchData1(String type){
+        pokSearch = type;
+        secondConnection = true;
     }
 
     @Override
@@ -38,9 +43,13 @@ public class fetchData1 extends AsyncTask<Void, Void, Void> {
         try {
             URL url;
             //Make API connection
-            url = new URL("https://pokeapi.co/api/v2/type/");
+            if (!secondConnection){
+                url = new URL("https://pokeapi.co/api/v2/type/");
+            }else {
+                url = new URL("https://pokeapi.co/api/v2/type/"+ pokSearch);
+            }
+
             MainActivity.gotTypes= true;
-            Log.i("provaLog", "Dentro fetchData1");
 
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
@@ -68,32 +77,41 @@ public class fetchData1 extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid){
         JSONObject jObject = null;
-        String img = "";
-        String typeName = "";
-        String typeObj="";
-        allTypes= new ArrayList<String>();
+
+        oneTypeNames = new ArrayList<String>();
 
         try {
 
             jObject = new JSONObject(data);
 
-            // Get Type names
-            if (allTypes==null){
-                Log.i("provaLog", "dentro if");
+            // Get all Type names
+            if(!secondConnection) {
                 JSONArray typeNames = new JSONArray(jObject.getString("results"));
-                for (int i=0; i<typeNames.length(); i++){
+                for (int i = 0; i < typeNames.length(); i++) {
                     JSONObject typeNameAll = new JSONObject(typeNames.getString(i));
-                    //JSONObject oneType = new JSONObject(typeNameAll.getString("type"));
-                    allTypes.add(typeNameAll.getString("name"));
-                    Log.i("provaLog", "allType.get(i)): "+allTypes.get(i));
+                    MainActivity.allTypes.add(typeNameAll.getString("name"));
+                    //Log.i("provaLog", "allType.get(i)): " + MainActivity.allTypes.get(i));
+                }
+
+            }else {
+                Log.i("provaLog", "Pasa por secondConnection");
+
+                JSONArray pokemon = new JSONArray(jObject.getString("pokemon"));
+                Log.i("provaLog", "Json array length: "+ pokemon.length());
+                for (int i = 0; i < 1; i++) {
+
+                    JSONObject typeNameAll = new JSONObject(pokemon.toString(i));
+                    Log.i("provaLog", "pokemon.toString(i): "+pokemon.toString(i));
+
+                    JSONObject names = new JSONObject(typeNameAll.getString("pokemon"));
+                    oneTypeNames.add(names.getString("name"));
+                    Log.i("provaLog", "oneTypeNames.get(i)): " + oneTypeNames.get(i));
                 }
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
 
     }
 }

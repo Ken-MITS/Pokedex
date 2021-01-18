@@ -60,6 +60,7 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
             inputStream.close();
             data = sBuilder.toString();
 
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -103,13 +104,9 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
                 strTypes.add(type2.getString("name"));
             }
 
-            fetchData1 data2 = new fetchData1();
-            data2.execute();
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         // Set info
         MainActivity.txtDisplay.setText(this.results);

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
@@ -20,8 +21,10 @@ import org.w3c.dom.Text;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     public static int numeroPokemon = 1;
     public static boolean gotTypes=false;
 
+    public static ArrayList<String> allTypes;
+
 
     public static ImageView[] imgType;
 
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        allTypes = new ArrayList<>();
 
         act = this;
         imgType = new ImageView[2];
@@ -86,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
 
         fetchData data = new fetchData(String.valueOf(numeroPokemon));
         data.execute();
+        fetchData1 data2 = new fetchData1();
+        data2.execute();
 
         ImageButton btnSearch = findViewById(R.id.btnSearch);
         btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -98,14 +106,25 @@ public class MainActivity extends AppCompatActivity {
         types.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                  /*  AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                    builder.setTitle(R.string.pick_color)
-                            .setItems(R.array.colors_array, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // The 'which' argument contains the index position of the selected item
-                                }
-                            });*/
+                for (int i=0; i<allTypes.size(); i++){
+                    Log.i("provaLog", "list.get(i): "+allTypes.get(i));
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Types")
+                        .setItems(allTypes.toArray(new String[0]), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position of the selected item
+                                String a = allTypes.get(which);
+                                fetchData1 fetch = new fetchData1(a);
+                                Log.i("provaLog", "fetch search: "+a);
+                                fetch.execute();
+                            }
+                        });
+                builder.create();
+                builder.show();
             }
+
         });
 
     }
