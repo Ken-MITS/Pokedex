@@ -34,10 +34,12 @@ public class MainActivity extends AppCompatActivity {
     public static ImageView imgPok;
     public static Button right, left;
     public static ImageButton types;
-    public static int numeroPokemon = 1;
+    public static int numeroPokemon = 1, numeroType;
     public static boolean gotTypes=false;
 
-    public static ArrayList<String> allTypes;
+    public static String selected="All";
+
+    public static ArrayList<String> allTypes, oneTypeNames;
 
 
     public static ImageView[] imgType;
@@ -60,14 +62,25 @@ public class MainActivity extends AppCompatActivity {
         left = findViewById(R.id.btnLeft);
         types = findViewById(R.id.btnTypes);
 
+        MainActivity.allTypes.add("All");
+
+
+
 
 
         right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numeroPokemon++;
-                fetchData a = new fetchData(Integer.toString(numeroPokemon));
-                a.execute();
+                if (!allTypes.equals("All")){
+                    numeroType++;
+                    fetchData a = new fetchData(oneTypeNames.get(numeroType));
+                    a.execute();
+                }else {
+                    numeroPokemon++;
+                    fetchData a = new fetchData(Integer.toString(numeroPokemon));
+                    a.execute();
+                }
+
             }
         });
         left.setOnClickListener(new View.OnClickListener() {
@@ -76,9 +89,20 @@ public class MainActivity extends AppCompatActivity {
                 if (numeroPokemon > 1) {
                     numeroPokemon--;
                 }
+                if (numeroType > 1){
+                    numeroType--;
+                }
 
-                fetchData a = new fetchData(Integer.toString(numeroPokemon));
-                a.execute();
+                if (!allTypes.equals("All")) {
+                    numeroType--;
+                    fetchData a = new fetchData(oneTypeNames.get(numeroType));
+                    a.execute();
+                }else {
+                    fetchData a = new fetchData(Integer.toString(numeroPokemon));
+                    a.execute();
+                }
+
+
             }
         });
 
@@ -106,10 +130,6 @@ public class MainActivity extends AppCompatActivity {
         types.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                for (int i=0; i<allTypes.size(); i++){
-                    Log.i("provaLog", "list.get(i): "+allTypes.get(i));
-                }
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("Types")
                         .setItems(allTypes.toArray(new String[0]), new DialogInterface.OnClickListener() {
@@ -119,6 +139,10 @@ public class MainActivity extends AppCompatActivity {
                                 fetchData1 fetch = new fetchData1(a);
                                 Log.i("provaLog", "fetch search: "+a);
                                 fetch.execute();
+                                selected = a;
+
+                                Log.i("provaLog", "size: "+oneTypeNames.size());
+
                             }
                         });
                 builder.create();

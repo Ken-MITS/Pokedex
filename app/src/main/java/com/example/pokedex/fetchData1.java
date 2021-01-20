@@ -27,7 +27,7 @@ public class fetchData1 extends AsyncTask<Void, Void, Void> {
 
     protected String data = "";
     protected String results = "";
-    protected static ArrayList<String> oneTypeNames; // Create an ArrayList object
+
     protected String pokSearch;
     private static boolean secondConnection = false;
 
@@ -46,6 +46,7 @@ public class fetchData1 extends AsyncTask<Void, Void, Void> {
             if (!secondConnection){
                 url = new URL("https://pokeapi.co/api/v2/type/");
             }else {
+
                 url = new URL("https://pokeapi.co/api/v2/type/"+ pokSearch);
             }
 
@@ -78,35 +79,39 @@ public class fetchData1 extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid){
         JSONObject jObject = null;
 
-        oneTypeNames = new ArrayList<String>();
+        MainActivity.oneTypeNames = new ArrayList<String>();
 
         try {
 
             jObject = new JSONObject(data);
 
             // Get all Type names
+
             if(!secondConnection) {
                 JSONArray typeNames = new JSONArray(jObject.getString("results"));
-                for (int i = 0; i < typeNames.length(); i++) {
+                for (int i = 1; i < typeNames.length()+1; i++) {
                     JSONObject typeNameAll = new JSONObject(typeNames.getString(i));
                     MainActivity.allTypes.add(typeNameAll.getString("name"));
                     //Log.i("provaLog", "allType.get(i)): " + MainActivity.allTypes.get(i));
                 }
 
             }else {
-                Log.i("provaLog", "Pasa por secondConnection");
 
                 JSONArray pokemon = new JSONArray(jObject.getString("pokemon"));
-                Log.i("provaLog", "Json array length: "+ pokemon.length());
-                for (int i = 0; i < 1; i++) {
-
-                    JSONObject typeNameAll = new JSONObject(pokemon.toString(i));
-                    Log.i("provaLog", "pokemon.toString(i): "+pokemon.toString(i));
-
+                //Log.i("provaLog", "Json array length: "+ pokemon.length());
+                for (int i = 0; i < pokemon.length(); i++) {
+                    JSONObject typeNameAll = new JSONObject(pokemon.getString(i));
                     JSONObject names = new JSONObject(typeNameAll.getString("pokemon"));
-                    oneTypeNames.add(names.getString("name"));
-                    Log.i("provaLog", "oneTypeNames.get(i)): " + oneTypeNames.get(i));
+                    MainActivity.oneTypeNames.add(names.getString("name"));
+                    Log.i("provaLog", "oneTypeNames.get(i)): " + MainActivity.oneTypeNames.get(i));
                 }
+                if (pokSearch.equals("All")){
+                    pokSearch="";
+                }
+                MainActivity.numeroType = 0;
+                fetchData secondProcess = new fetchData(MainActivity.oneTypeNames.get(MainActivity.numeroType));
+                secondProcess.execute();
+
             }
 
         } catch (JSONException e) {
