@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!allTypes.equals("All")){
+                if (!selected.equals("All")){
                     numeroType++;
                     fetchData a = new fetchData(oneTypeNames.get(numeroType));
                     a.execute();
@@ -86,18 +86,16 @@ public class MainActivity extends AppCompatActivity {
         left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (numeroPokemon > 1) {
-                    numeroPokemon--;
-                }
-                if (numeroType > 1){
-                    numeroType--;
-                }
-
-                if (!allTypes.equals("All")) {
-                    numeroType--;
+                if (!selected.equals("All")) {
+                    if (numeroType > 1){
+                        numeroType--;
+                    }
                     fetchData a = new fetchData(oneTypeNames.get(numeroType));
                     a.execute();
                 }else {
+                    if (numeroPokemon > 1) {
+                        numeroPokemon--;
+                    }
                     fetchData a = new fetchData(Integer.toString(numeroPokemon));
                     a.execute();
                 }
@@ -136,10 +134,17 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 // The 'which' argument contains the index position of the selected item
                                 String a = allTypes.get(which);
-                                fetchData1 fetch = new fetchData1(a);
-                                Log.i("provaLog", "fetch search: "+a);
-                                fetch.execute();
+                                if (a.equals("All")){
+                                    numeroPokemon=1;
+                                    fetchData processAll = new fetchData("1");
+                                    processAll.execute();
+                                }else{
+                                    fetchData1 fetch = new fetchData1(a);
+                                    Log.i("provaLog", "fetch search: "+a);
+                                    fetch.execute();
+                                }
                                 selected = a;
+
 
                                 Log.i("provaLog", "size: "+oneTypeNames.size());
 

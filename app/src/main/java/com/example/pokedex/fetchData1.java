@@ -96,7 +96,6 @@ public class fetchData1 extends AsyncTask<Void, Void, Void> {
                 }
 
             }else {
-
                 JSONArray pokemon = new JSONArray(jObject.getString("pokemon"));
                 //Log.i("provaLog", "Json array length: "+ pokemon.length());
                 for (int i = 0; i < pokemon.length(); i++) {
@@ -104,14 +103,11 @@ public class fetchData1 extends AsyncTask<Void, Void, Void> {
                     JSONObject names = new JSONObject(typeNameAll.getString("pokemon"));
                     MainActivity.oneTypeNames.add(names.getString("name"));
                     Log.i("provaLog", "oneTypeNames.get(i)): " + MainActivity.oneTypeNames.get(i));
-                }
-                if (pokSearch.equals("All")){
-                    pokSearch="";
-                }
-                MainActivity.numeroType = 0;
-                fetchData secondProcess = new fetchData(MainActivity.oneTypeNames.get(MainActivity.numeroType));
-                secondProcess.execute();
 
+                    MainActivity.numeroType = 0;
+                    fetchData secondProcess = new fetchData(MainActivity.oneTypeNames.get(MainActivity.numeroType));
+                    secondProcess.execute();
+                }
             }
 
         } catch (JSONException e) {
